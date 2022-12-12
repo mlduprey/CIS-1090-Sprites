@@ -23,18 +23,13 @@ function setup(sprites) {
     //But you can use emojis!
     // https://emojis.wiki/
 
-    sprites[0].image = "🚒"; //A fire engine
-    sprites[0].x = 100;
-    sprites[0].y = 100;
+    sprites[0].image = "🦶";
+    sprites[0].x = 10;
+    sprites[0].y = 0;
 
-    //Putting two sprites together you
-    //can make more complicated things.
-    sprites[1].image = "🏠"; //A fire engine
-    sprites[1].x = 300;
-    sprites[1].y = 100;
-    sprites[2].image = "🔥"; //A fire engine
-    sprites[2].x = 300;
-    sprites[2].y = 120;
+    sprites[1].image = "⚽";
+    sprites[1].x = 200;
+    sprites[1].y = 400;
 
 }
 
@@ -50,56 +45,55 @@ function setup(sprites) {
  * @param space     Is spacebar pressed?
  * @returns The current score
  */
+let ballSpeed = -5;
+let ballSpeedx = 1;
 function frame(sprites, t, dt, up, down, left, right, space) {
     //Keep references to the sprites in some variables with
     //better names:
-    const truck = sprites[0]; //Easier to remember
-    const house = sprites[1]; //Easier to remember
-    const fire = sprites[2]; //Easier to remember
+    const foot = sprites[0];
+    const ball = sprites[1];
 
-    //Move the fire engine
-    if (up) {
-        //Speed is in pixels per second, and
-        //dt is the number of seconds that have
-        //passed since the last frame.
-        //
-        //Multiply them together so that the
-        //truck moves at the same speed if the
-        //computer is fast or slow
-        truck.y += speed * dt;
-    } 
-    if (down) {
-        truck.y -= speed * dt;
-    }
     if (right) {
-        truck.x += speed * dt;
-        //You can flipH a spright so it is facing
-        //the other direction
-        truck.flipH = true;
+        foot.x = foot.x + 10;
+        foot.flipH = true;
     }
     if (left) {
-        truck.x -= speed * dt;
-        truck.flipH = false;
+        foot.x = foot.x - 10;
+        foot.flipH = false;
     }
 
-    //If the truck is close to the house
-    if ( distance(truck, house) < 10 ){
-        fire.image = ""; //Make the fire go away
+
+    ball.y = ball.y + ballSpeed;
+    ballSpeed = ballSpeed - .3;
+    ball.x = ball.x + ballSpeedx;
+
+    ball.x = ball.x % 700;
+    if ( ball.x < 0 )
+        ball.x = 699;
+
+    if (ball.y <= 0){
+        ball.y = 400;
+        ballSpeed = -5;
     }
 
-    //A very simple repeating animation
-    sprites[2].y += Math.sin(t)/10;
+    if(distance(ball, foot) < 50 && ballSpeed < 0){
+        console.log("hit");
+        score = score + 1
+        ballSpeed = -ballSpeed;
+        ballSpeedx = Math.random() * 6 - 3;
+    }
 
-    return score;
+    return score; 
 };
 
 export default {
-    name: "Homework",
-    instructions: "Write your instructions here",
-    icon: "📝", //Choose an emoji icon
+    name: "Kick the Ball",
+    instructions: "Try to keep up with the ball! Use the left and right arrows to move your foot, and don't let the ball hit the ground!",
+    icon: "⚽", // ⚽
     background: {
-        //You can put CSS here to change your background
-        "background-color": "#555"
+        "background-color": "skyblue",
+        "background-image": "linear-gradient(#424299, skyblue)",
+        "border-bottom": "50px solid green"
     },
     frame,
     setup,
